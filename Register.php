@@ -1,10 +1,20 @@
 <?php
-session_start();
-require 'LRDatabase.php'; // Your database connection file
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    require 'LRDatabaseAdmin.php'; // Ensure this path is correct
 
-// Registration logic...
-// After successful registration:
-$_SESSION['registration_success'] = 'Registration successful! You can now log in.';
-header('Location: index.php'); // Redirect back to the index page
-exit();
-?>
+    $username = $_POST['username'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
+    // Adjusted SQL statement with placeholders for username and password only
+    $sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+    $stmt = $pdo->prepare($sql);
+
+    if ($stmt->execute([$username, $password])) {
+        header('Location: Dashboard.php'); // Redirect to the dashboard after successful registration
+        exit();
+    } else {
+        // It's better to use $stmt->errorInfo() to get error details in PDO
+        $errorInfo = $stmt->errorInfo();
+        echo "Error: " . $errorInfo[2]; // This displays the actual error message from the database
+    }
+}

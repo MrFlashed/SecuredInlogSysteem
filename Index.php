@@ -8,8 +8,23 @@
 </head>
 <body>
 
+<?php
+session_start(); // Start the session at the beginning
+
+// Check for an error message in the session
+$errorMessage = '';
+if (isset($_SESSION['error'])) {
+    $errorMessage = $_SESSION['error'];
+    unset($_SESSION['error']); // Clear the error message from the session
+}
+?>
+
 <div class="form-container">
-    <img src=".\images\Logo.png" alt="Profile Image" class="profile-pic">
+    <img src="./images/Logo.png" alt="Profile Image" class="profile-pic">
+
+    <?php if (!empty($errorMessage)): ?>
+        <p class="error-message" style="color: red;"><?php echo htmlspecialchars($errorMessage); ?></p>
+    <?php endif; ?>
 
     <!-- Login Form -->
     <form id="loginForm" method="POST" action="login.php" style="display: none;">
